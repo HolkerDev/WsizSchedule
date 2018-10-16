@@ -1,27 +1,191 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:orientation="vertical"
-    android:background="@drawable/background"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:paddingBottom="@dimen/activity_vertical_margin"
+    android:background="@drawable/background"
+    android:orientation="vertical"
     android:paddingLeft="@dimen/activity_horizontal_margin"
-    android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingBottom="@dimen/activity_vertical_margin"
     tools:context="wsiiz.holker.bus.MainActivity">
 
 
-    <Button
-        android:id="@+id/button"
-        android:background="@drawable/btn_rounded_white"
+    <TextView
+        android:id="@+id/tv_date"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_centerHorizontal="true"
-        android:layout_marginBottom="30dp"
-        android:text="Download"
-        android:textAllCaps="true"
+        android:background="@drawable/btn_rounded_white"
+        android:text="16"
+        android:textAlignment="center"
+        android:textAllCaps="false"
+        android:textColor="@android:color/background_dark"
+        android:textSize="18sp"
         android:textStyle="bold" />
 
-</RelativeLayout>
+    <!--<android.support.v7.widget.GridLayout-->
+    <!--android:layout_width="match_parent"-->
+    <!--app:columnCount="6"-->
+    <!--android:layout_height="420dp">-->
+
+    <!--<TextView-->
+    <!--android:id="@+id/textView13"-->
+    <!--android:layout_width="wrap_content"-->
+    <!--android:layout_height="wrap_content"-->
+    <!--android:padding="2dp"-->
+    <!--android:background="@drawable/station"-->
+    <!--android:text="Catynia"-->
+    <!--android:textSize="12sp"-->
+    <!--android:textStyle="bold" />-->
+
+    <!--<TextView-->
+    <!--android:id="@+id/textView14"-->
+    <!--android:layout_width="wrap_content"-->
+    <!--android:layout_height="wrap_content"-->
+    <!--android:background="@drawable/station"-->
+
+    <!--android:padding="2dp"-->
+    <!--android:text="Cieplinskiego"-->
+    <!--android:textSize="12sp"-->
+    <!--android:textStyle="bold"-->
+    <!--app:layout_column="1"-->
+    <!--app:layout_row="0" />-->
+
+    <!--<TextView-->
+    <!--android:id="@+id/textView15"-->
+    <!--android:layout_width="wrap_content"-->
+    <!--android:layout_height="wrap_content"-->
+    <!--android:background="@drawable/station"-->
+
+    <!--android:padding="2dp"-->
+    <!--android:text="Al. Powst. W-wy"-->
+    <!--android:textSize="12sp"-->
+    <!--android:textStyle="bold"-->
+    <!--app:layout_column="2"-->
+    <!--app:layout_row="0" />-->
+
+    <!--<TextView-->
+    <!--android:id="@+id/textView16"-->
+    <!--android:layout_width="wrap_content"-->
+    <!--android:layout_height="wrap_content"-->
+    <!--android:background="@drawable/station"-->
+
+    <!--android:padding="2dp"-->
+    <!--android:text="TESCO"-->
+    <!--android:textSize="12sp"-->
+    <!--android:textStyle="bold"-->
+    <!--app:layout_column="3"-->
+    <!--app:layout_row="0" />-->
+
+    <!--<TextView-->
+    <!--android:id="@+id/textView17"-->
+    <!--android:layout_width="wrap_content"-->
+    <!--android:layout_height="wrap_content"-->
+    <!--android:background="@drawable/station"-->
+
+    <!--android:text="Tyczyn"-->
+    <!--android:textSize="12sp"-->
+    <!--android:textStyle="bold"-->
+    <!--app:layout_column="4"-->
+    <!--app:layout_row="0"-->
+    <!--android:padding="2dp" />-->
+
+    <!--<TextView-->
+    <!--android:id="@+id/textView18"-->
+    <!--android:layout_width="wrap_content"-->
+    <!--android:layout_height="wrap_content"-->
+    <!--android:padding="2dp"-->
+    <!--android:background="@drawable/station"-->
+
+    <!--android:text="CTiR"-->
+    <!--android:textSize="12sp"-->
+    <!--android:textStyle="bold"-->
+    <!--app:layout_column="5"-->
+    <!--app:layout_row="0" />-->
+    <!--</android.support.v7.widget.GridLayout>-->
+
+    <Button
+        android:id="@+id/btn_catynia_go"
+        android:layout_width="match_parent"
+        android:layout_height="35dp"
+        android:tag="1"
+        android:layout_marginTop="10dp"
+        android:onClick="toSchedule"
+        android:background="@drawable/go_background"
+        android:text="ul. Ofiar Katynia (kladka piesza)"
+        android:textAllCaps="false" />
+
+    <Button
+        android:id="@+id/btn_cieplinskiego_go"
+        android:layout_width="match_parent"
+        android:layout_height="35dp"
+        android:layout_marginTop="10dp"
+        android:background="@drawable/go_background"
+        android:onClick="toSchedule"
+        android:text="ul. Cieplinskiego"
+        android:textAllCaps="false" />
+
+    <Button
+        android:id="@+id/btn_warszawa_go"
+        android:layout_width="match_parent"
+        android:layout_height="35dp"
+        android:layout_marginTop="10dp"
+        android:onClick="toSchedule"
+        android:background="@drawable/go_background"
+        android:text="Al. Powst. W-wy (na wysokosci stacji benzynowej BP)"
+        android:textAllCaps="false" />
+
+    <Button
+        android:id="@+id/btn_tesco_go"
+        android:layout_width="match_parent"
+        android:layout_height="35dp"
+        android:layout_marginTop="10dp"
+        android:onClick="toSchedule"
+        android:background="@drawable/go_background"
+        android:text="Parking TESCO"
+        android:textAllCaps="false" />
+
+    <Button
+        android:id="@+id/btn_tyczyn_go"
+        android:layout_width="match_parent"
+        android:layout_height="35dp"
+        android:layout_marginTop="10dp"
+        android:onClick="toSchedule"
+        android:background="@drawable/go_background"
+        android:text="Tyczyn Park"
+        android:textAllCaps="false" />
+
+    <Button
+        android:id="@+id/btn_kielnarowa_back"
+        android:layout_width="match_parent"
+        android:layout_height="35dp"
+        android:layout_marginTop="10dp"
+        android:onClick="toSchedule"
+        android:background="@drawable/back_background"
+        android:text="CTiR" />
+
+    <Button
+        android:id="@+id/btn_tyczyn_back"
+        android:layout_width="match_parent"
+        android:layout_height="35dp"
+        android:layout_marginTop="10dp"
+        android:onClick="toSchedule"
+        android:background="@drawable/back_background"
+        android:text="Tyczyn Park"
+        android:textAllCaps="false" />
+
+    <Button
+        android:id="@+id/button"
+        android:layout_width="match_parent"
+        android:layout_height="35dp"
+        android:layout_gravity="bottom"
+        android:layout_marginTop="30dp"
+        android:background="@drawable/btn_rounded_white"
+        android:text="Download"
+        android:textAllCaps="true"
+        android:textSize="12sp"
+        android:textStyle="bold" />
+
+</LinearLayout>

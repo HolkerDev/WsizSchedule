@@ -3,11 +3,13 @@ package wsiiz.holker.bus;
 import android.app.Activity;
 import android.app.DownloadManager;
 import android.content.Context;
+import android.content.Intent;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import org.json.JSONException;
@@ -19,6 +21,7 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.Calendar;
 import java.util.Objects;
 import java.util.concurrent.ExecutionException;
 
@@ -26,6 +29,51 @@ public class MainActivity extends Activity {
 
     Button mButtonDownload;
     String link = null;
+    TextView mTextViewDate;
+    Calendar tempDate = Calendar.getInstance();
+    Button mButtonCatyniaGo;
+    Button mButtonCieplinskiegoGo;
+    Button mButtonWarszawaGo;
+    Button mButtonTescoGo;
+    Button mButtonTyczynGo;
+    Button mButtonKielnarowaBack;
+    Button mButtonTyczynBack;
+
+    public void toSchedule(View view) {
+        Intent goToSchedule = new Intent(getApplicationContext(), ScheduleList.class);
+        switch (view.getId()) {
+            case R.id.btn_catynia_go:
+                goToSchedule.putExtra("stationName", "ul. Ofiar Katynia (kladka piesza)");
+                startActivity(goToSchedule);
+                break;
+            case R.id.btn_cieplinskiego_go:
+                goToSchedule.putExtra("stationName", "ul. Cieplinskiego");
+                startActivity(goToSchedule);
+                break;
+            case R.id.btn_warszawa_go:
+                goToSchedule.putExtra("stationName", "Al. Powst. Warszawy");
+                startActivity(goToSchedule);
+                break;
+            case R.id.btn_tesco_go:
+                goToSchedule.putExtra("stationName", "Parking TESCO");
+                startActivity(goToSchedule);
+                break;
+            case R.id.btn_tyczyn_go:
+                goToSchedule.putExtra("stationName", "Tyczyn Park to Kielnarowa");
+                startActivity(goToSchedule);
+                break;
+            case R.id.btn_kielnarowa_back:
+                goToSchedule.putExtra("stationName", "Kielnarowa");
+                startActivity(goToSchedule);
+                break;
+            case R.id.btn_tyczyn_back:
+                goToSchedule.putExtra("stationName", "Tyczyn Park to TESCO");
+                startActivity(goToSchedule);
+                break;
+            default:
+                break;
+        }
+    }
 
     public class getLinkToSchedule extends AsyncTask<String, Void, String> {
 
@@ -62,6 +110,21 @@ public class MainActivity extends Activity {
 
     }
 
+
+    public String currentDate(Calendar data) {
+        StringBuilder curDate = new StringBuilder();
+        String[] month = new String[]{
+                "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sept", "Oct", "Nov", "Dec"
+        };
+        int monthNumber = data.get(Calendar.MONTH);
+        curDate.append(String.valueOf(data.get(Calendar.DATE)));
+        curDate.append("-");
+        curDate.append(month[monthNumber]);
+        curDate.append("-");
+        curDate.append(String.valueOf(data.get(Calendar.YEAR)));
+        return curDate.toString();
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -71,6 +134,17 @@ public class MainActivity extends Activity {
 
         //find
         mButtonDownload = (Button) findViewById(R.id.button);
+        mTextViewDate = (TextView) findViewById(R.id.tv_date);
+        mButtonCatyniaGo = (Button) findViewById(R.id.btn_catynia_go);
+        mButtonCieplinskiegoGo = (Button) findViewById(R.id.btn_cieplinskiego_go);
+        mButtonWarszawaGo = (Button) findViewById(R.id.btn_warszawa_go);
+        mButtonTescoGo = (Button) findViewById(R.id.btn_tesco_go);
+        mButtonTyczynGo = (Button) findViewById(R.id.btn_tyczyn_go);
+        mButtonTyczynBack = (Button) findViewById(R.id.btn_tyczyn_back);
+        mButtonKielnarowaBack = (Button) findViewById(R.id.btn_kielnarowa_back);
+
+
+        mTextViewDate.setText(currentDate(tempDate));
 
         getLinkToSchedule task = new getLinkToSchedule();
 
