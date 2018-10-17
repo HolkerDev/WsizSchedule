@@ -23,8 +23,7 @@ public class XlsxParser {
     Date startDate;
     Date endDate;
     Calendar tempDate = Calendar.getInstance();
-    StringBuilder result = new StringBuilder();
-    List<List<String>> column = new ArrayList<>(6);
+    List<List<String>> column = new ArrayList<>(9);
 
     ArrayList<String> one = new ArrayList<>();
     ArrayList<String> two = new ArrayList<>();
@@ -32,9 +31,12 @@ public class XlsxParser {
     ArrayList<String> four = new ArrayList<>();
     ArrayList<String> five = new ArrayList<>();
     ArrayList<String> six = new ArrayList<>();
+    ArrayList<String> seven = new ArrayList<>();
+    ArrayList<String> eight = new ArrayList<>();
+    ArrayList<String> nine = new ArrayList<>();
 
 
-    public String startParse(String path) {
+    public List<List<String>> startParse(String path) {
         File myFile = new File(path);
         FileInputStream fis = null;
 
@@ -73,8 +75,12 @@ public class XlsxParser {
         column.add(3, four);
         column.add(4, five);
         column.add(5, six);
-        Log.i("MyLog", column.toString());
-        return result.toString();
+        column.add(6, seven);
+        column.add(7, eight);
+        column.add(8, nine);
+        //Log.i("MyLog", column.get(7).toString());
+
+        return column;
     }
 
     public String minuteCovert() {
@@ -158,14 +164,20 @@ public class XlsxParser {
                     case 6:
                         six.add(pasteTime(cell.getDateCellValue()));
                         break;
+                    case 7:
+                        seven.add(pasteTime(cell.getDateCellValue()));
+                        break;
+                    case 8:
+                        eight.add(pasteTime(cell.getDateCellValue()));
+                        break;
+                    case 9:
+                        nine.add(pasteTime(cell.getDateCellValue()));
+                        break;
                     default:
                         break;
                 }
 
             }
-        }
-        if (start) {
-            //result.append("\n");
         }
     }
 }

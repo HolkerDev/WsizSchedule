@@ -21,7 +21,9 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.ExecutionException;
 
@@ -39,35 +41,51 @@ public class MainActivity extends Activity {
     Button mButtonKielnarowaBack;
     Button mButtonTyczynBack;
 
+    List<List<String>> column = new ArrayList<>();
+
     public void toSchedule(View view) {
         Intent goToSchedule = new Intent(getApplicationContext(), ScheduleList.class);
         switch (view.getId()) {
             case R.id.btn_catynia_go:
                 goToSchedule.putExtra("stationName", "ul. Ofiar Katynia (kladka piesza)");
+                String[] array = column.get(0).toArray(new String[0]);
+                goToSchedule.putExtra("schedule", array);
                 startActivity(goToSchedule);
                 break;
             case R.id.btn_cieplinskiego_go:
                 goToSchedule.putExtra("stationName", "ul. Cieplinskiego");
+                String[] array1 = column.get(1).toArray(new String[0]);
+                goToSchedule.putExtra("schedule", array1);
                 startActivity(goToSchedule);
                 break;
             case R.id.btn_warszawa_go:
                 goToSchedule.putExtra("stationName", "Al. Powst. Warszawy");
+                String[] array2 = column.get(2).toArray(new String[0]);
+                goToSchedule.putExtra("schedule", array2);
                 startActivity(goToSchedule);
                 break;
             case R.id.btn_tesco_go:
                 goToSchedule.putExtra("stationName", "Parking TESCO");
+                String[] array3 = column.get(3).toArray(new String[0]);
+                goToSchedule.putExtra("schedule", array3);
                 startActivity(goToSchedule);
                 break;
             case R.id.btn_tyczyn_go:
                 goToSchedule.putExtra("stationName", "Tyczyn Park to Kielnarowa");
+                String[] array4 = column.get(4).toArray(new String[0]);
+                goToSchedule.putExtra("schedule", array4);
                 startActivity(goToSchedule);
                 break;
             case R.id.btn_kielnarowa_back:
                 goToSchedule.putExtra("stationName", "Kielnarowa");
+                String[] array6 = column.get(6).toArray(new String[0]);
+                goToSchedule.putExtra("schedule", array6);
                 startActivity(goToSchedule);
                 break;
             case R.id.btn_tyczyn_back:
                 goToSchedule.putExtra("stationName", "Tyczyn Park to TESCO");
+                String[] array7 = column.get(7).toArray(new String[0]);
+                goToSchedule.putExtra("schedule", array7);
                 startActivity(goToSchedule);
                 break;
             default:
@@ -199,7 +217,8 @@ public class MainActivity extends Activity {
 
                 String path = Objects.requireNonNull(getExternalFilesDir(null)).getPath() + "/file.xlsx";
 
-                String res = parser.startParse(path);
+                column = parser.startParse(path);
+
 
                 //Log.i("MyLog", res);
 
