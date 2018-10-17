@@ -1,6 +1,5 @@
 package wsiiz.holker.bus;
 
-import android.content.Context;
 import android.util.Log;
 
 import org.apache.poi.ss.usermodel.Cell;
@@ -12,9 +11,11 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Iterator;
+import java.util.List;
 
 public class XlsxParser {
     boolean start = false;
@@ -23,7 +24,15 @@ public class XlsxParser {
     Date endDate;
     Calendar tempDate = Calendar.getInstance();
     StringBuilder result = new StringBuilder();
-    Context mContext;
+    List<List<String>> column = new ArrayList<>(6);
+
+    ArrayList<String> one = new ArrayList<>();
+    ArrayList<String> two = new ArrayList<>();
+    ArrayList<String> three = new ArrayList<>();
+    ArrayList<String> four = new ArrayList<>();
+    ArrayList<String> five = new ArrayList<>();
+    ArrayList<String> six = new ArrayList<>();
+
 
     public String startParse(String path) {
         File myFile = new File(path);
@@ -57,6 +66,14 @@ public class XlsxParser {
                 break;
             }
         }
+
+        column.add(0, one);
+        column.add(1, two);
+        column.add(2, three);
+        column.add(3, four);
+        column.add(4, five);
+        column.add(5, six);
+        Log.i("MyLog", column.toString());
         return result.toString();
     }
 
@@ -70,11 +87,11 @@ public class XlsxParser {
     }
 
 
-    public void pasteTime(Date date) {
+    public String pasteTime(Date date) {
         tempDate.setTime(date);
-        result.append(tempDate.get(Calendar.HOUR_OF_DAY)).append(":").append(minuteCovert());
-        result.append("\n");
-        Log.i("MyLog",tempDate.get(Calendar.HOUR_OF_DAY)+":"+(minuteCovert()));
+        //result.append(tempDate.get(Calendar.HOUR_OF_DAY)).append(":").append(minuteCovert());
+        //result.append("\n");
+        return tempDate.get(Calendar.HOUR_OF_DAY) + ":" + (minuteCovert());
     }
 
     public Date increaseDay(Date date) {
@@ -108,11 +125,11 @@ public class XlsxParser {
             Cell cell = cellIterator.next();
             if (cell.getCellType() == Cell.CELL_TYPE_NUMERIC && compareDay(cell.getDateCellValue().toString())) {
                 start = true;
-                Log.i("MyLog", cell.getDateCellValue() + " : " + String.valueOf(cell.getColumnIndex()));
+//                Log.i("MyLog", cell.getDateCellValue() + " : " + String.valueOf(cell.getColumnIndex()));
                 startDate = cell.getDateCellValue();
                 System.out.println(startDate);
                 endDate = increaseDay(startDate);
-                result.append(startDate).append("\n");
+//                result.append(startDate).append("\n");
 //                System.out.println(endDate);
             } else if (cell.getCellType() == Cell.CELL_TYPE_NUMERIC &&
                     start && cell.getDateCellValue().toString().equals(endDate.toString())) {
@@ -121,11 +138,34 @@ public class XlsxParser {
             } else if (cell.getCellType() == Cell.CELL_TYPE_NUMERIC && start) {
                 pasteTime(cell.getDateCellValue());
 //                System.out.println(cell.getDateCellValue());
-                Log.i("MyLog", String.valueOf(cell.getColumnIndex()));
+                //Log.i("MyLog", String.valueOf(cell.getColumnIndex()));
+                switch (cell.getColumnIndex()) {
+                    case 1:
+                        one.add(pasteTime(cell.getDateCellValue()));
+                        break;
+                    case 2:
+                        two.add(pasteTime(cell.getDateCellValue()));
+                        break;
+                    case 3:
+                        three.add(pasteTime(cell.getDateCellValue()));
+                        break;
+                    case 4:
+                        four.add(pasteTime(cell.getDateCellValue()));
+                        break;
+                    case 5:
+                        five.add(pasteTime(cell.getDateCellValue()));
+                        break;
+                    case 6:
+                        six.add(pasteTime(cell.getDateCellValue()));
+                        break;
+                    default:
+                        break;
+                }
+
             }
         }
         if (start) {
-            result.append("\n");
+            //result.append("\n");
         }
     }
 }
