@@ -176,6 +176,18 @@
         android:text="Tyczyn Park"
         android:textAllCaps="false" />
 
+    <TextView
+        android:id="@+id/tv_up_to_date"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="25dp"
+        android:background="@drawable/btn_rounded_white"
+        android:text="UP TO DATE"
+        android:textAlignment="center"
+        android:textColor="@color/common_google_signin_btn_text_dark_focused"
+        android:textSize="24sp"
+        android:textStyle="bold" />
+
     <Button
         android:id="@+id/button"
         android:layout_width="match_parent"

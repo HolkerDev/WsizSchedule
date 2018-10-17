@@ -15,6 +15,9 @@ import android.widget.Toast;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -40,8 +43,11 @@ public class MainActivity extends Activity {
     Button mButtonTyczynGo;
     Button mButtonKielnarowaBack;
     Button mButtonTyczynBack;
+    Boolean mUpToDate;
+    TextView mTextViewUpdate;
 
     List<List<String>> column = new ArrayList<>();
+
 
     public void toSchedule(View view) {
         Intent goToSchedule = new Intent(getApplicationContext(), ScheduleList.class);
@@ -160,6 +166,23 @@ public class MainActivity extends Activity {
         mButtonTyczynGo = (Button) findViewById(R.id.btn_tyczyn_go);
         mButtonTyczynBack = (Button) findViewById(R.id.btn_tyczyn_back);
         mButtonKielnarowaBack = (Button) findViewById(R.id.btn_kielnarowa_back);
+        mTextViewUpdate = (TextView) findViewById(R.id.tv_up_to_date);
+
+        String pathCheck = Objects.requireNonNull(getExternalFilesDir(null)).getPath() + "/file.xlsx";
+
+        File myFile = new File(pathCheck);
+        FileInputStream fis = null;
+        try {
+            XlsxParser parser = new XlsxParser();
+            fis = new FileInputStream(myFile);
+            mUpToDate = true;
+            column = parser.startParse(pathCheck);
+            mTextViewUpdate.setText("Ready to use");
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+            mUpToDate = false;
+            mTextViewUpdate.setText("Need to download data");
+        }
 
 
         mTextViewDate.setText(currentDate(tempDate));
@@ -213,15 +236,26 @@ public class MainActivity extends Activity {
                     Toast.makeText(getApplicationContext(), "Successful",
                             Toast.LENGTH_LONG).show();
                 }
-                XlsxParser parser = new XlsxParser();
-
-                String path = Objects.requireNonNull(getExternalFilesDir(null)).getPath() + "/file.xlsx";
-
-                column = parser.startParse(path);
 
 
-                //Log.i("MyLog", res);
+                String pathCheck = Objects.requireNonNull(getExternalFilesDir(null)).getPath() + "/file.xlsx";
 
+                File myFile = new File(pathCheck);
+                FileInputStream fis = null;
+                try {
+                    XlsxParser parser = new XlsxParser();
+                    fis = new FileInputStream(myFile);
+                    mUpToDate = true;
+                    column = parser.startParse(pathCheck);
+                    mTextViewUpdate.setText("Ready to use");
+                } catch (FileNotFoundException e) {
+                    e.printStackTrace();
+                    mUpToDate = false;
+                    mTextViewUpdate.setText("Need to download data");
+                }
+                finishAndRemoveTask();
+                //String path = Objects.requireNonNull(getExternalFilesDir(null)).getPath() + "/file.xlsx";
+                //column = parser.startParse(path);
             }
         });
 
