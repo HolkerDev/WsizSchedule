@@ -76,8 +76,10 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 break;
             case "Tyczyn Park to TESCO":
                 mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(tyczynBack, zoom));
+                break;
             case "Tyczyn Park to Kielnarowa":
                 mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(tyczynGo, zoom));
+                break;
             default:
                 break;
         }
