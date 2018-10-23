@@ -24,6 +24,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
+import java.net.InetAddress;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
@@ -53,6 +54,17 @@ public class MainActivity extends Activity {
     SharedPreferences mSharedPreferences;
 
     List<List<String>> column = new ArrayList<>();
+
+    public boolean isInternetAvailable() {
+        try {
+            InetAddress ipAddr = InetAddress.getByName("google.com");
+            //You can replace it with your name
+            return !ipAddr.equals("");
+
+        } catch (Exception e) {
+            return false;
+        }
+    }
 
 
     public void toSchedule(View view) {
@@ -176,8 +188,6 @@ public class MainActivity extends Activity {
         String pathCheck = Objects.requireNonNull(getExternalFilesDir(null)).getPath() +
                 "/" + mSharedPreferences.getString("lastFileName", "") + ".xlsx";
 
-        Toast.makeText(getApplicationContext(), pathCheck, Toast.LENGTH_LONG).show();
-
         File myFile = new File(pathCheck);
         FileInputStream fis = null;
         try {
@@ -198,7 +208,13 @@ public class MainActivity extends Activity {
             mButtonWarszawaGo.setEnabled(false);
             mButtonCatyniaGo.setEnabled(false);
             mButtonCieplinskiegoGo.setEnabled(false);
-            mButtonDownload.setEnabled(true);
+            if (isInternetAvailable()) {
+                mButtonDownload.setEnabled(false);
+                mTextViewUpdate.setText("No internet connection");
+            } else {
+                mButtonDownload.setEnabled(true);
+            }
+
         }
 
 
@@ -208,6 +224,8 @@ public class MainActivity extends Activity {
         mButtonDownload.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
+
                 String subLink = null;
                 mButtonDownload.setEnabled(false);
 
@@ -217,25 +235,19 @@ public class MainActivity extends Activity {
                     result = task.execute("https://observer.name/api/wsiz").get();
                     JSONObject object = new JSONObject(result);
 
-                    //https:\/\/wu.wsiz.rzeszow.pl\/wunet\/pliki\/Kielnarowa\/201809241023.xlsx
 
                     String schedule = object.getString("wsizbus");
-//                Toast.makeText(getApplicationContext(), schedule, Toast.LENGTH_LONG).show();
                     object = new JSONObject(schedule);
-//                Toast.makeText(getApplicationContext(), object.getString("url"),
-//                        Toast.LENGTH_LONG).show();
                     link = object.getString("url");
 
                     Pattern p = Pattern.compile("narowa\\/(.*?).xlsx");
                     Matcher m = p.matcher(link);
                     while (m.find()) {
                         Log.i("MyLog", m.group(1));
-                        Toast.makeText(getApplicationContext(), m.group(1), Toast.LENGTH_LONG).show();
                         subLink = m.group(1);
                     }
 
-//            Toast.makeText(getApplicationContext(), link,
-//                    Toast.LENGTH_LONG).show();
+
                 } catch (ExecutionException e) {
                     e.printStackTrace();
                 } catch (InterruptedException e) {
@@ -245,18 +257,11 @@ public class MainActivity extends Activity {
                 }
 
 
-//                Toast.makeText(getApplicationContext(), link,
-//                        Toast.LENGTH_LONG).show();
-//                mDownloadManager = (DownloadManager) getSystemService(Context.DOWNLOAD_SERVICE);
                 Uri uri = Uri.parse(link);
-//                DownloadManager.Request request = new DownloadManager.Request(uri);
-//                request.setNotificationVisibility(DownloadManager.Request
-//                        .VISIBILITY_VISIBLE_NOTIFY_COMPLETED);
-//                idRequest = mDownloadManager.enqueue(request);
 
 
                 DownloadManager.Request request1 = new DownloadManager.Request(uri);
-                request1.setDescription("Description");   //appears the same in Notification bar while downloading
+                request1.setDescription("Description");
                 request1.setTitle("Title");
                 request1.setVisibleInDownloadsUi(false);
 
@@ -267,14 +272,14 @@ public class MainActivity extends Activity {
                 if (DownloadManager.STATUS_SUCCESSFUL == 8) {
                     Toast.makeText(getApplicationContext(), "Successful",
                             Toast.LENGTH_LONG).show();
+                } else {
+                    Toast.makeText(getApplicationContext(), "Error", Toast.LENGTH_LONG);
                 }
 
                 mSharedPreferences.edit().putString("lastFileName", subLink).apply();
 
                 Toast.makeText(getApplicationContext(), "Restart your app", Toast.LENGTH_LONG).show();
                 finishAndRemoveTask();
-                //String path = Objects.requireNonNull(getExternalFilesDir(null)).getPath() + "/file.xlsx";
-                //column = parser.startParse(path);
             }
         });
 
