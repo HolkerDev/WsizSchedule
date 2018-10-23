@@ -4,9 +4,11 @@ import android.app.Activity;
 import android.app.DownloadManager;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
@@ -29,6 +31,8 @@ import java.util.Calendar;
 import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.ExecutionException;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class MainActivity extends Activity {
 
@@ -45,6 +49,8 @@ public class MainActivity extends Activity {
     Button mButtonTyczynBack;
     Boolean mUpToDate;
     TextView mTextViewUpdate;
+    String result = null;
+    SharedPreferences mSharedPreferences;
 
     List<List<String>> column = new ArrayList<>();
 
@@ -153,8 +159,7 @@ public class MainActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        String result = null;
-
+        mSharedPreferences = getSharedPreferences("wsiiz.holker.bus", MODE_PRIVATE);
 
         //find
         mButtonDownload = (Button) findViewById(R.id.button);
@@ -168,7 +173,10 @@ public class MainActivity extends Activity {
         mButtonKielnarowaBack = (Button) findViewById(R.id.btn_kielnarowa_back);
         mTextViewUpdate = (TextView) findViewById(R.id.tv_up_to_date);
 
-        String pathCheck = Objects.requireNonNull(getExternalFilesDir(null)).getPath() + "/file.xlsx";
+        String pathCheck = Objects.requireNonNull(getExternalFilesDir(null)).getPath() +
+                "/" + mSharedPreferences.getString("lastFileName", "") + ".xlsx";
+
+        Toast.makeText(getApplicationContext(), pathCheck, Toast.LENGTH_LONG).show();
 
         File myFile = new File(pathCheck);
         FileInputStream fis = null;
@@ -178,41 +186,65 @@ public class MainActivity extends Activity {
             mUpToDate = true;
             column = parser.startParse(pathCheck);
             mTextViewUpdate.setText("Ready to use");
+            mButtonDownload.setEnabled(false);
         } catch (FileNotFoundException e) {
             e.printStackTrace();
             mUpToDate = false;
             mTextViewUpdate.setText("Need to download data");
+            mButtonKielnarowaBack.setEnabled(false);
+            mButtonTyczynBack.setEnabled(false);
+            mButtonTyczynGo.setEnabled(false);
+            mButtonTescoGo.setEnabled(false);
+            mButtonWarszawaGo.setEnabled(false);
+            mButtonCatyniaGo.setEnabled(false);
+            mButtonCieplinskiegoGo.setEnabled(false);
+            mButtonDownload.setEnabled(true);
         }
 
 
         mTextViewDate.setText(currentDate(tempDate));
 
-        getLinkToSchedule task = new getLinkToSchedule();
-
-        try {
-            result = task.execute("https://observer.name/api/wsiz").get();
-            JSONObject object = new JSONObject(result);
-
-            String schedule = object.getString("wsizbus");
-//                Toast.makeText(getApplicationContext(), schedule, Toast.LENGTH_LONG).show();
-            object = new JSONObject(schedule);
-//                Toast.makeText(getApplicationContext(), object.getString("url"),
-//                        Toast.LENGTH_LONG).show();
-            link = object.getString("url");
-            Toast.makeText(getApplicationContext(), link,
-                    Toast.LENGTH_LONG).show();
-        } catch (ExecutionException e) {
-            e.printStackTrace();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-
 
         mButtonDownload.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                String subLink = null;
+                mButtonDownload.setEnabled(false);
+
+                getLinkToSchedule task = new getLinkToSchedule();
+
+                try {
+                    result = task.execute("https://observer.name/api/wsiz").get();
+                    JSONObject object = new JSONObject(result);
+
+                    //https:\/\/wu.wsiz.rzeszow.pl\/wunet\/pliki\/Kielnarowa\/201809241023.xlsx
+
+                    String schedule = object.getString("wsizbus");
+//                Toast.makeText(getApplicationContext(), schedule, Toast.LENGTH_LONG).show();
+                    object = new JSONObject(schedule);
+//                Toast.makeText(getApplicationContext(), object.getString("url"),
+//                        Toast.LENGTH_LONG).show();
+                    link = object.getString("url");
+
+                    Pattern p = Pattern.compile("narowa\\/(.*?).xlsx");
+                    Matcher m = p.matcher(link);
+                    while (m.find()) {
+                        Log.i("MyLog", m.group(1));
+                        Toast.makeText(getApplicationContext(), m.group(1), Toast.LENGTH_LONG).show();
+                        subLink = m.group(1);
+                    }
+
+//            Toast.makeText(getApplicationContext(), link,
+//                    Toast.LENGTH_LONG).show();
+                } catch (ExecutionException e) {
+                    e.printStackTrace();
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+
+
 //                Toast.makeText(getApplicationContext(), link,
 //                        Toast.LENGTH_LONG).show();
 //                mDownloadManager = (DownloadManager) getSystemService(Context.DOWNLOAD_SERVICE);
@@ -228,7 +260,7 @@ public class MainActivity extends Activity {
                 request1.setTitle("Title");
                 request1.setVisibleInDownloadsUi(false);
 
-                request1.setDestinationInExternalFilesDir(getApplicationContext(), null, "file.xlsx");
+                request1.setDestinationInExternalFilesDir(getApplicationContext(), null, subLink + ".xlsx");
 
                 DownloadManager manager1 = (DownloadManager) getSystemService(Context.DOWNLOAD_SERVICE);
                 Objects.requireNonNull(manager1).enqueue(request1);
@@ -237,22 +269,9 @@ public class MainActivity extends Activity {
                             Toast.LENGTH_LONG).show();
                 }
 
+                mSharedPreferences.edit().putString("lastFileName", subLink).apply();
 
-                String pathCheck = Objects.requireNonNull(getExternalFilesDir(null)).getPath() + "/file.xlsx";
-
-                File myFile = new File(pathCheck);
-                FileInputStream fis = null;
-                try {
-                    XlsxParser parser = new XlsxParser();
-                    fis = new FileInputStream(myFile);
-                    mUpToDate = true;
-                    column = parser.startParse(pathCheck);
-                    mTextViewUpdate.setText("Ready to use");
-                } catch (FileNotFoundException e) {
-                    e.printStackTrace();
-                    mUpToDate = false;
-                    mTextViewUpdate.setText("Need to download data");
-                }
+                Toast.makeText(getApplicationContext(), "Restart your app", Toast.LENGTH_LONG).show();
                 finishAndRemoveTask();
                 //String path = Objects.requireNonNull(getExternalFilesDir(null)).getPath() + "/file.xlsx";
                 //column = parser.startParse(path);
