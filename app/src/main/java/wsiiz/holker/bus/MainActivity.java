@@ -174,6 +174,7 @@ public class MainActivity extends Activity {
         setContentView(R.layout.activity_main);
         mSharedPreferences = getSharedPreferences("wsiiz.holker.bus", MODE_PRIVATE);
 
+
         //find
         mButtonDownload = findViewById(R.id.button);
         mTextViewDate = findViewById(R.id.tv_date);
@@ -189,6 +190,8 @@ public class MainActivity extends Activity {
         //Take the file path from cache
         String pathCheck = Objects.requireNonNull(getExternalFilesDir(null)).getPath() +
                 "/" + mSharedPreferences.getString("lastFileName", "") + ".xlsx";
+
+        Log.i("MyLog", mSharedPreferences.getString("lastFileName",""));
 
         //Check if file is downloaded or not
         File myFile = new File(pathCheck);

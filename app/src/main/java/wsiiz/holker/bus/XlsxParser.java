@@ -108,6 +108,7 @@ public class XlsxParser {
             Calendar calendar = Calendar.getInstance();
             calendar.setTime(date);
             calendar.add(Calendar.DAY_OF_MONTH, 1);
+            Log.i("MyLog", calendar.getTime().toString());
             return calendar.getTime();
         } else {
             return null;
@@ -125,15 +126,24 @@ public class XlsxParser {
         }
     }
 
+    private String getDay() {
+        int day = Calendar.getInstance().get(Calendar.DAY_OF_MONTH);
+        if (day < 10) {
+            return "0" + String.valueOf(day);
+        } else {
+            return String.valueOf(day);
+        }
+    }
+
     //Compare day to segregate the block of dates
     public boolean compareDay(String date) {
-        String day = String.valueOf(Calendar.getInstance().get(Calendar.DAY_OF_MONTH));
-        return compareYear(date) && date.substring(8, 10).equals(day);
+        return compareYear(date) && date.substring(8, 10).equals(getDay());
     }
 
     //function in loop that filters data and fills arrays
     public void function(Iterator<Cell> cellIterator) {
         while (cellIterator.hasNext()) {
+            //Sat Nov 03 00:00:00 GMT+01:00 2018
             Cell cell = cellIterator.next();
             if (cell.getCellType() == Cell.CELL_TYPE_NUMERIC && compareDay(cell.getDateCellValue().toString())) {
                 start = true;
@@ -146,32 +156,42 @@ public class XlsxParser {
                 loop = false;
             } else if (cell.getCellType() == Cell.CELL_TYPE_NUMERIC && start) {
                 pasteTime(cell.getDateCellValue());
+                Log.i("MyLog", pasteTime(cell.getDateCellValue()));
                 switch (cell.getColumnIndex()) {
                     case 1:
+                        Log.i("MyLog", pasteTime(cell.getDateCellValue()));
                         one.add(pasteTime(cell.getDateCellValue()));
                         break;
                     case 2:
+                        Log.i("MyLog", pasteTime(cell.getDateCellValue()));
                         two.add(pasteTime(cell.getDateCellValue()));
                         break;
                     case 3:
+                        Log.i("MyLog", pasteTime(cell.getDateCellValue()));
                         three.add(pasteTime(cell.getDateCellValue()));
                         break;
                     case 4:
+                        Log.i("MyLog", pasteTime(cell.getDateCellValue()));
                         four.add(pasteTime(cell.getDateCellValue()));
                         break;
                     case 5:
+                        Log.i("MyLog", pasteTime(cell.getDateCellValue()));
                         five.add(pasteTime(cell.getDateCellValue()));
                         break;
                     case 6:
+                        Log.i("MyLog", pasteTime(cell.getDateCellValue()));
                         six.add(pasteTime(cell.getDateCellValue()));
                         break;
                     case 7:
+                        Log.i("MyLog", pasteTime(cell.getDateCellValue()));
                         seven.add(pasteTime(cell.getDateCellValue()));
                         break;
                     case 8:
+                        Log.i("MyLog", pasteTime(cell.getDateCellValue()));
                         eight.add(pasteTime(cell.getDateCellValue()));
                         break;
                     case 9:
+                        Log.i("MyLog", pasteTime(cell.getDateCellValue()));
                         nine.add(pasteTime(cell.getDateCellValue()));
                         break;
                     default:
