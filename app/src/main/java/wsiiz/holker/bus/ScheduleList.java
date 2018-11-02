@@ -22,21 +22,24 @@ public class ScheduleList extends Activity {
         setContentView(R.layout.activity_schedule_list);
 
         //find
-        mTextView = (TextView) findViewById(R.id.tv_name_station);
-        mListViewStations = (ListView) findViewById(R.id.lv_stations);
+        mTextView = findViewById(R.id.tv_name_station);
+        mListViewStations = findViewById(R.id.lv_stations);
 
+        //get extra
         Intent fromPrev = getIntent();
         stationName = fromPrev.getStringExtra("stationName");
         schedule = fromPrev.getStringArrayExtra("schedule");
 
-        ArrayAdapter arrayAdapter = new ArrayAdapter<String>(getApplicationContext(),
+        ArrayAdapter arrayAdapter = new ArrayAdapter<>(getApplicationContext(),
                 android.R.layout.simple_list_item_1, schedule);
 
+        //Show whole list of dates
         mListViewStations.setAdapter(arrayAdapter);
 
         mTextView.setText(stationName);
 
 
+        //Show map
         mTextView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

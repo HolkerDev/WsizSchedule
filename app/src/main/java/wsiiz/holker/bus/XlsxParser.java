@@ -25,6 +25,7 @@ public class XlsxParser {
     Calendar tempDate = Calendar.getInstance();
     List<List<String>> column = new ArrayList<>(9);
 
+    //Separate array for every station(column)
     ArrayList<String> one = new ArrayList<>();
     ArrayList<String> two = new ArrayList<>();
     ArrayList<String> three = new ArrayList<>();
@@ -36,6 +37,7 @@ public class XlsxParser {
     ArrayList<String> nine = new ArrayList<>();
 
 
+    //Parse file and return array with whole parsed data
     public List<List<String>> startParse(String path) {
         File myFile = new File(path);
         FileInputStream fis = null;
@@ -78,11 +80,12 @@ public class XlsxParser {
         column.add(6, seven);
         column.add(7, eight);
         column.add(8, nine);
-        //Log.i("MyLog", column.get(7).toString());
 
         return column;
     }
 
+
+    //Convert minutes to readable version
     public String minuteCovert() {
         String minute = String.valueOf(tempDate.get(Calendar.MINUTE));
         if (Integer.parseInt(minute) < 10) {
@@ -93,13 +96,13 @@ public class XlsxParser {
     }
 
 
+    //Return hour and minutes (more readable)
     public String pasteTime(Date date) {
         tempDate.setTime(date);
-        //result.append(tempDate.get(Calendar.HOUR_OF_DAY)).append(":").append(minuteCovert());
-        //result.append("\n");
         return tempDate.get(Calendar.HOUR_OF_DAY) + ":" + (minuteCovert());
     }
 
+    //Increase the date and return 'date' + one day
     public Date increaseDay(Date date) {
         if (date != null) {
             Calendar calendar = Calendar.getInstance();
@@ -112,6 +115,7 @@ public class XlsxParser {
 
     }
 
+    //Compare year to segregate the block of dates
     public boolean compareYear(String date) {
         String year = String.valueOf(Calendar.getInstance().get(Calendar.YEAR));
         if (date.substring(date.length() - 4, date.length()).equals(year)) {
@@ -121,30 +125,27 @@ public class XlsxParser {
         }
     }
 
+    //Compare day to segregate the block of dates
     public boolean compareDay(String date) {
         String day = String.valueOf(Calendar.getInstance().get(Calendar.DAY_OF_MONTH));
         return compareYear(date) && date.substring(8, 10).equals(day);
     }
 
+    //function in loop that filters data and fills arrays
     public void function(Iterator<Cell> cellIterator) {
         while (cellIterator.hasNext()) {
             Cell cell = cellIterator.next();
             if (cell.getCellType() == Cell.CELL_TYPE_NUMERIC && compareDay(cell.getDateCellValue().toString())) {
                 start = true;
-//                Log.i("MyLog", cell.getDateCellValue() + " : " + String.valueOf(cell.getColumnIndex()));
                 startDate = cell.getDateCellValue();
                 System.out.println(startDate);
                 endDate = increaseDay(startDate);
-//                result.append(startDate).append("\n");
-//                System.out.println(endDate);
             } else if (cell.getCellType() == Cell.CELL_TYPE_NUMERIC &&
                     start && cell.getDateCellValue().toString().equals(endDate.toString())) {
                 start = false;
                 loop = false;
             } else if (cell.getCellType() == Cell.CELL_TYPE_NUMERIC && start) {
                 pasteTime(cell.getDateCellValue());
-//                System.out.println(cell.getDateCellValue());
-                //Log.i("MyLog", String.valueOf(cell.getColumnIndex()));
                 switch (cell.getColumnIndex()) {
                     case 1:
                         one.add(pasteTime(cell.getDateCellValue()));

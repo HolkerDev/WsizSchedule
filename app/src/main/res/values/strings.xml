@@ -3,4 +3,7 @@
     <string name="read_xlsx">Read XLSX</string>
     <string name="write_xlsx">Write XLSX</string>
     <string name="send_to">Send to...</string>
+    <string name="ready">Ready to use</string>
+    <string name="need_download">Need to download data</string>
+    <string name="no_internet">No internet connection</string>
 </resources>

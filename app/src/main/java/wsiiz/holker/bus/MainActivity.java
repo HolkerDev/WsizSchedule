@@ -25,7 +25,6 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.InetAddress;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -53,12 +52,13 @@ public class MainActivity extends Activity {
     String result = null;
     SharedPreferences mSharedPreferences;
 
+    //List with schedule after parsing xlsx file
     List<List<String>> column = new ArrayList<>();
 
+    //Check Internet connection
     public boolean isInternetAvailable() {
         try {
             InetAddress ipAddr = InetAddress.getByName("google.com");
-            //You can replace it with your name
             return !ipAddr.equals("");
 
         } catch (Exception e) {
@@ -67,6 +67,7 @@ public class MainActivity extends Activity {
     }
 
 
+    //Show list of dates & put extras
     public void toSchedule(View view) {
         Intent goToSchedule = new Intent(getApplicationContext(), ScheduleList.class);
         switch (view.getId()) {
@@ -117,6 +118,7 @@ public class MainActivity extends Activity {
         }
     }
 
+    //Connect to API and get the latest link of xlsx file
     public class getLinkToSchedule extends AsyncTask<String, Void, String> {
 
 
@@ -142,8 +144,6 @@ public class MainActivity extends Activity {
 
                 return result.toString();
 
-            } catch (MalformedURLException e) {
-                e.printStackTrace();
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -153,6 +153,7 @@ public class MainActivity extends Activity {
     }
 
 
+    //Return current date in String
     public String currentDate(Calendar data) {
         StringBuilder curDate = new StringBuilder();
         String[] month = new String[]{
@@ -174,33 +175,37 @@ public class MainActivity extends Activity {
         mSharedPreferences = getSharedPreferences("wsiiz.holker.bus", MODE_PRIVATE);
 
         //find
-        mButtonDownload = (Button) findViewById(R.id.button);
-        mTextViewDate = (TextView) findViewById(R.id.tv_date);
-        mButtonCatyniaGo = (Button) findViewById(R.id.btn_catynia_go);
-        mButtonCieplinskiegoGo = (Button) findViewById(R.id.btn_cieplinskiego_go);
-        mButtonWarszawaGo = (Button) findViewById(R.id.btn_warszawa_go);
-        mButtonTescoGo = (Button) findViewById(R.id.btn_tesco_go);
-        mButtonTyczynGo = (Button) findViewById(R.id.btn_tyczyn_go);
-        mButtonTyczynBack = (Button) findViewById(R.id.btn_tyczyn_back);
-        mButtonKielnarowaBack = (Button) findViewById(R.id.btn_kielnarowa_back);
-        mTextViewUpdate = (TextView) findViewById(R.id.tv_up_to_date);
+        mButtonDownload = findViewById(R.id.button);
+        mTextViewDate = findViewById(R.id.tv_date);
+        mButtonCatyniaGo = findViewById(R.id.btn_catynia_go);
+        mButtonCieplinskiegoGo = findViewById(R.id.btn_cieplinskiego_go);
+        mButtonWarszawaGo = findViewById(R.id.btn_warszawa_go);
+        mButtonTescoGo = findViewById(R.id.btn_tesco_go);
+        mButtonTyczynGo = findViewById(R.id.btn_tyczyn_go);
+        mButtonTyczynBack = findViewById(R.id.btn_tyczyn_back);
+        mButtonKielnarowaBack = findViewById(R.id.btn_kielnarowa_back);
+        mTextViewUpdate = findViewById(R.id.tv_up_to_date);
 
+        //Take the file path from cache
         String pathCheck = Objects.requireNonNull(getExternalFilesDir(null)).getPath() +
                 "/" + mSharedPreferences.getString("lastFileName", "") + ".xlsx";
 
+        //Check if file is downloaded or not
         File myFile = new File(pathCheck);
         FileInputStream fis = null;
         try {
+            //if 'yes' - parse it
             XlsxParser parser = new XlsxParser();
             fis = new FileInputStream(myFile);
             mUpToDate = true;
             column = parser.startParse(pathCheck);
-            mTextViewUpdate.setText("Ready to use");
+            mTextViewUpdate.setText(getString(R.string.ready));
             mButtonDownload.setEnabled(false);
         } catch (FileNotFoundException e) {
+            //if 'not' - activate button 'Donwload' and deactivate other buttons
             e.printStackTrace();
             mUpToDate = false;
-            mTextViewUpdate.setText("Need to download data");
+            mTextViewUpdate.setText(getString(R.string.need_download));
             mButtonKielnarowaBack.setEnabled(false);
             mButtonTyczynBack.setEnabled(false);
             mButtonTyczynGo.setEnabled(false);
@@ -210,7 +215,7 @@ public class MainActivity extends Activity {
             mButtonCieplinskiegoGo.setEnabled(false);
             if (isInternetAvailable()) {
                 mButtonDownload.setEnabled(false);
-                mTextViewUpdate.setText("No internet connection");
+                mTextViewUpdate.setText(getString(R.string.no_internet));
             } else {
                 mButtonDownload.setEnabled(true);
             }
@@ -218,9 +223,11 @@ public class MainActivity extends Activity {
         }
 
 
+        //set current date to textView
         mTextViewDate.setText(currentDate(tempDate));
 
 
+        //Download file and save it
         mButtonDownload.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -248,11 +255,7 @@ public class MainActivity extends Activity {
                     }
 
 
-                } catch (ExecutionException e) {
-                    e.printStackTrace();
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                } catch (JSONException e) {
+                } catch (ExecutionException | InterruptedException | JSONException e) {
                     e.printStackTrace();
                 }
 
@@ -273,7 +276,7 @@ public class MainActivity extends Activity {
                     Toast.makeText(getApplicationContext(), "Successful",
                             Toast.LENGTH_LONG).show();
                 } else {
-                    Toast.makeText(getApplicationContext(), "Error", Toast.LENGTH_LONG);
+                    Toast.makeText(getApplicationContext(), "Error", Toast.LENGTH_LONG).show();
                 }
 
                 mSharedPreferences.edit().putString("lastFileName", subLink).apply();
